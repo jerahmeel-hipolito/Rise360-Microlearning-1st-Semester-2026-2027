@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Portal — Courses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="shell">
+      <div class="brand">Microlearning <span class="brand-mark">Portal</span></div>
+      <div class="student-chip">
+        <span id="student-id-display">—</span>
+        <button id="sign-out-btn" type="button">Not you?</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell">
+      <div class="page-title-row">
+        <p class="eyebrow">Your Courses</p>
+        <h1>Choose a course to continue.</h1>
+      </div>
+
+      <div class="course-preview-grid" id="course-preview-grid">
+        <!-- populated by JS from CourseCatalog -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">Microlearning Portal · your progress is tracked automatically per lesson</div>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/course-catalog.js"></script>
+  <script>
+    (function () {
+      const studentId = Storage.getStudentId();
+      if (!studentId) {
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('student-id-display').textContent = studentId;
+
+      document.getElementById('sign-out-btn').addEventListener('click', function () {
+        Storage.clearStudentId();
+        window.location.href = 'index.html';
+      });
+
+      // Each course links out to its own dedicated course-<id>.html detail
+      // page (see PROJECT_CONTINUITY.md) rather than expanding its full
+      // chapter/lesson list inline here — this page's job is just "which
+      // course", the detail page's job is "which lesson".
+      const PAGE_BY_COURSE = {
+        biostatistics: 'course-biostatistics.html',
+        ssa: 'course-ssa.html',
+        ama: 'course-ama.html'
+      };
+
+      const grid = document.getElementById('course-preview-grid');
+
+      // NOTE: the progress shown here is a purely cosmetic, LOCAL-ONLY
+      // convenience for the student's own browser (see storage.js
+      // countCompletedForCourse). It is NOT authoritative analytics — the
+      // instructor's Dashboard sheet remains the source of truth.
+      CourseCatalog.forEach(function (course) {
+        const completed = Storage.countCompletedForCourse(course.courseId);
+        const total = course.totalLessons;
+        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+        const chapterCount = course.chapters.length;
+
+        const card = document.createElement('div');
+        card.className = 'course-preview-card';
+
+        card.innerHTML =
+          '<div class="preview-card-band" data-course="' + course.courseId + '">' +
+            '<span class="preview-course-code">' + course.courseCode + '</span>' +
+            (completed > 0 ? '<span class="preview-progress-pill">' + pct + '% complete</span>' : '<span class="preview-progress-pill new">New</span>') +
+          '</div>' +
+          '<div class="preview-card-body">' +
+            '<p class="preview-course-number">' + course.courseNumber + '</p>' +
+            '<h2>' + course.courseName + '</h2>' +
+            '<p class="preview-course-desc">' + course.courseDescription + '</p>' +
+            '<div class="preview-meta-row">' +
+              '<span>' + chapterCount + ' chapters</span>' +
+              '<span class="meta-dot">&middot;</span>' +
+              '<span>' + total + ' lessons</span>' +
+            '</div>' +
+            '<div class="progress-track" role="progressbar" aria-valuenow="' + pct + '" aria-valuemin="0" aria-valuemax="100" aria-label="' + course.courseName + ' progress">' +
+              '<div class="progress-fill" style="width:' + pct + '%"></div>' +
+            '</div>' +
+            '<a class="btn-view-course" href="' + PAGE_BY_COURSE[course.courseId] + '">' +
+              (completed > 0 ? 'Continue course' : 'View course') + ' &rarr;' +
+            '</a>' +
+          '</div>';
+
+        grid.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>

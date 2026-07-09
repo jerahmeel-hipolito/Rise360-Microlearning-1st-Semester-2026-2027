@@ -1,0 +1,992 @@
+/**
+ * portal.css
+ * Shared design tokens and base styles for the GitHub Microlearning Portal.
+ *
+ * Design direction: light, blue, minimalist — a quiet academic course
+ * catalog, not a SaaS marketing site. Near-white paper background (not
+ * stark white), deep blue-black ink for text, one confident blue accent
+ * family. The signature device is the course code "spine label"
+ * (BIOSTAT / SSA / AMA) styled like a catalog spine, not a rounded badge —
+ * specific to this being a course catalog, not generic minimalism.
+ */
+
+:root {
+  /* Color tokens */
+  --paper: #fafbfd;
+  --paper-raised: #ffffff;
+  --ink: #1a2433;
+  --ink-soft: #56627a;
+  --ink-faint: #677088;
+
+  --blue-700: #1e4fa8;
+  --blue-600: #2a5cc0;
+  --blue-500: #3b6fd1;
+  --blue-100: #e8eefb;
+  --blue-050: #f3f6fd;
+
+  --green-600: #2f7a4f;
+  --red-600: #b3402f;
+  --red-050: #fbeeec;
+
+  --line: #dce3ef;
+  --line-soft: #ebeff6;
+
+  /* Type */
+  --font-display: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Consolas, monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--blue-700);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue-600);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Layout shell ---------- */
+
+.shell {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  padding: 26px 0 20px;
+}
+
+.site-header .shell {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.brand .brand-mark {
+  color: var(--blue-700);
+}
+
+.student-chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: var(--blue-050);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-chip button {
+  background: none;
+  border: none;
+  color: var(--blue-700);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+}
+.student-chip button:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 52px 0 80px;
+}
+
+/* ---------- Landing / login card ---------- */
+
+.landing-hero-wrap {
+  position: relative;
+}
+
+/* A quiet statistical watermark — a small scatter/regression-line motif,
+   the kind of marginal sketch you'd find in a stats textbook. Deliberately
+   faint (low opacity, blue-100) so it reads as texture, not a second
+   signature element competing with the course "spine label" tags, which
+   remain this design's one bold move. */
+.hero-watermark {
+  position: absolute;
+  top: -18px;
+  right: -8px;
+  width: 168px;
+  height: 168px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 759px) {
+  .hero-watermark { display: none; }
+}
+
+.landing-grid {
+  display: grid;
+  gap: 48px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-intro .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-700);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing-intro .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--blue-700);
+}
+
+.landing-intro h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.05rem, 4.2vw, 2.75rem);
+  line-height: 1.14;
+  margin: 0 0 18px;
+  max-width: 19ch;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.landing-intro p {
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 0 8px;
+  font-size: 1.02rem;
+}
+
+/* Signature element: course code "spine labels" — styled like the spine
+   text on a catalog binder, not a rounded pill badge. Left border instead
+   of full outline keeps it quiet and specific to "shelf of courses". */
+.course-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.course-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  transition: padding-left 0.15s ease;
+}
+
+.course-tag:hover {
+  padding-left: 6px;
+  color: var(--ink);
+}
+
+.course-tag .code {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--blue-700);
+  border-left: 2px solid var(--blue-500);
+  padding-left: 9px;
+  flex-shrink: 0;
+  min-width: 64px;
+}
+
+.id-card {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 30px 28px;
+  box-shadow: 0 2px 10px rgba(26, 36, 51, 0.055), 0 1px 2px rgba(26, 36, 51, 0.04);
+}
+
+.id-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--blue-050);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue-700);
+  margin-bottom: 14px;
+}
+
+.id-card h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.id-card .helper {
+  color: var(--ink-faint);
+  font-size: 0.86rem;
+  margin: 0 0 20px;
+}
+
+.field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.id-input {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  padding: 12px 14px;
+  letter-spacing: 0.02em;
+}
+
+.id-input::placeholder {
+  color: var(--ink-faint);
+}
+
+.id-input:focus {
+  border-color: var(--blue-600);
+  background: var(--paper-raised);
+}
+
+.id-input.has-error {
+  border-color: var(--red-600);
+}
+
+.field-error {
+  color: var(--red-600);
+  font-size: 0.83rem;
+  margin: 8px 0 0;
+  min-height: 1.2em;
+}
+
+.btn-primary {
+  width: 100%;
+  margin-top: 18px;
+  background: var(--blue-700);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 18px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--blue-600);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.id-card .fine-print {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-top: 16px;
+  line-height: 1.55;
+}
+
+@media (min-width: 760px) {
+  .landing-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+/* ---------- Course / chapter / lesson listing ---------- */
+
+.page-title-row {
+  margin-bottom: 34px;
+}
+
+.page-title-row .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-700);
+  margin: 0 0 10px;
+}
+
+.code-inline {
+  border-left: 2px solid var(--blue-500);
+  padding-left: 8px;
+}
+
+.chapter-progress-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.page-title-row h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.2vw, 2.1rem);
+  margin: 0;
+  color: var(--ink);
+}
+
+.course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.course-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-raised);
+}
+
+.course-card summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 19px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.course-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.course-card-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.course-id-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--blue-700);
+  border-left: 2px solid var(--blue-500);
+  padding-left: 9px;
+}
+
+.course-card-title h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.08rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.disclosure-arrow {
+  color: var(--ink-faint);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.course-card[open] .disclosure-arrow {
+  transform: rotate(90deg);
+}
+
+.chapter-block {
+  border-top: 1px solid var(--line-soft);
+  padding: 16px 22px 20px;
+}
+
+.chapter-block h3 {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+}
+
+.lesson-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.lesson-row:hover {
+  background: var(--blue-050);
+}
+
+.lesson-link {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.lesson-link:hover {
+  color: var(--blue-700);
+  text-decoration: none;
+}
+
+.lesson-status {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.lesson-status.completed { color: var(--green-600); }
+.lesson-status.not-started { color: var(--ink-faint); }
+
+/* ---------- Course preview grid (courses.html) ---------- */
+/* Cards summarize each course and link out to its own detail page, rather
+   than listing every lesson inline. In place of course photography (not
+   available in this build), the "band" at the top of each card uses a
+   faint graph-paper grid — a quiet nod to the subject matter that stays
+   inside the established one-blue-accent palette rather than introducing
+   per-course colors. */
+
+.course-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.course-preview-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-raised);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.course-preview-card:hover {
+  box-shadow: 0 8px 24px rgba(26, 36, 51, 0.09);
+  transform: translateY(-2px);
+}
+
+.preview-card-band {
+  position: relative;
+  padding: 18px 20px;
+  background:
+    linear-gradient(155deg, var(--blue-700), var(--blue-600) 65%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 1px, transparent 1px, transparent 22px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0, rgba(255,255,255,0.07) 1px, transparent 1px, transparent 22px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 96px;
+}
+
+.preview-course-code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  border-left: 2px solid rgba(255,255,255,0.8);
+  padding-left: 9px;
+}
+
+.preview-progress-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--blue-700);
+  background: #ffffff;
+  border-radius: 100px;
+  padding: 4px 10px;
+  flex-shrink: 0;
+}
+
+.preview-progress-pill.new {
+  color: #ffffff;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+.preview-card-body {
+  padding: 20px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.preview-course-number {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+.preview-card-body h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.14rem;
+  margin: 2px 0 6px;
+  color: var(--ink);
+  line-height: 1.28;
+}
+
+.preview-course-desc {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.preview-meta-row {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-dot {
+  color: var(--line);
+}
+
+.progress-track {
+  height: 6px;
+  border-radius: 100px;
+  background: var(--line-soft);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: var(--blue-700);
+}
+
+.btn-view-course {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--blue-700);
+}
+
+.btn-view-course:hover {
+  text-decoration: none;
+  gap: 9px;
+}
+
+/* ---------- Course detail page (course-*.html): progress bar header ---------- */
+
+.course-progress-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin-bottom: 30px;
+}
+
+.course-progress-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.course-progress-label strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.course-progress-summary .progress-track {
+  flex: 1;
+  min-width: 140px;
+  height: 8px;
+  margin-bottom: 0;
+}
+
+.back-to-courses {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+
+.back-to-courses:hover {
+  color: var(--blue-700);
+  text-decoration: none;
+}
+
+/* ---------- Lesson frame page ---------- */
+
+.lesson-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.lesson-meta-bar .crumb-sep {
+  color: var(--ink-faint);
+  margin: 0 6px;
+}
+
+.lesson-frame-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+
+.lesson-frame-wrap iframe {
+  display: block;
+  width: 100%;
+  height: 88vh;
+  min-height: 720px;
+  max-height: 1120px;
+  border: none;
+}
+
+/* ---------- Error / notice banners ---------- */
+
+.notice-banner {
+  border: 1px solid #f0c6bd;
+  background: var(--red-050);
+  color: var(--ink);
+  border-radius: var(--radius-md);
+  padding: 13px 16px;
+  font-size: 0.88rem;
+  margin-bottom: 24px;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 22px 0 40px;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+
+/* ---------- Lesson player: left nav sidebar + enlarged player ---------- */
+/* Wider shell, used only on lesson wrapper pages, to give the sidebar +
+   player two-column layout room to breathe without cramping the player. */
+
+.shell-wide {
+  max-width: 1440px;
+}
+
+.lesson-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  color: var(--ink-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--blue-050);
+  color: var(--blue-700);
+}
+
+.lesson-title-row {
+  margin-bottom: 14px;
+}
+
+.lesson-title-row h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.lesson-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 28px;
+  align-items: start;
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* Collapsed state: sidebar column collapses to zero width so the player
+   gets the full shell width. Toggled via #sidebar-toggle-btn in the meta
+   bar (js/lesson-nav.js), which stays visible either way. Shown/expanded
+   is always the default on first load; collapsing is a per-browser
+   preference remembered in localStorage after that. */
+.lesson-layout.sidebar-collapsed {
+  grid-template-columns: 0 1fr;
+  gap: 0;
+}
+
+.lesson-layout.sidebar-collapsed .lesson-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  border-width: 0;
+}
+
+.lesson-sidebar {
+  position: sticky;
+  top: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-raised);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  transition: opacity 0.15s ease;
+}
+
+.lesson-sidebar-header {
+  padding: 14px 16px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.sidebar-course {
+  border-top: 1px solid var(--line-soft);
+}
+
+.sidebar-course summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.sidebar-course summary::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-course-code {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--blue-700);
+  border-left: 2px solid var(--blue-500);
+  padding-left: 7px;
+  flex-shrink: 0;
+}
+
+.sidebar-course-name {
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sidebar-lesson-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 16px 8px 24px;
+  font-size: 0.85rem;
+}
+
+.sidebar-chapter-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  padding: 12px 16px 4px 16px;
+  text-transform: uppercase;
+}
+
+.sidebar-course > .sidebar-chapter-label:first-of-type {
+  padding-top: 2px;
+}
+
+.sidebar-lesson-row a {
+  color: var(--ink-soft);
+}
+
+.sidebar-lesson-row a:hover {
+  color: var(--blue-700);
+  text-decoration: none;
+}
+
+.sidebar-lesson-row.active {
+  background: var(--blue-050);
+  border-left: 2px solid var(--blue-700);
+  padding-left: 22px;
+}
+
+.sidebar-lesson-row.active a {
+  color: var(--blue-700);
+  font-weight: 600;
+}
+
+.sidebar-check {
+  color: var(--green-600);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+.lesson-main {
+  min-width: 0;
+}
+
+.lesson-next-row {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-700);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.btn-next:hover {
+  background: var(--blue-600);
+  text-decoration: none;
+}
+
+@media (max-width: 960px) {
+  .lesson-layout,
+  .lesson-layout.sidebar-collapsed {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .lesson-sidebar {
+    position: static;
+    max-height: none;
+  }
+  /* On small screens the sidebar toggle hides/shows the block entirely
+     rather than animating a grid column, since there's no second column
+     to reclaim space from. */
+  .lesson-layout.sidebar-collapsed .lesson-sidebar {
+    display: none;
+  }
+  .lesson-frame-wrap iframe {
+    height: 62vh;
+    min-height: 440px;
+  }
+  .lesson-next-row {
+    justify-content: stretch;
+  }
+  .btn-next {
+    width: 100%;
+    justify-content: center;
+  }
+}

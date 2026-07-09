@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applied Multivariate Analysis — Course Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="shell">
+      <div class="brand">Microlearning <span class="brand-mark">Portal</span></div>
+      <div class="student-chip">
+        <span id="student-id-display">—</span>
+        <button id="sign-out-btn" type="button">Not you?</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell">
+      <a class="back-to-courses" href="courses.html">&larr; All courses</a>
+
+      <div class="page-title-row">
+        <p class="eyebrow"><span class="code-inline">AMA</span> &middot; MAS 305a</p>
+        <h1>Applied Multivariate Analysis</h1>
+      </div>
+
+      <div class="course-progress-summary">
+        <span class="course-progress-label" id="progress-label"><strong>0</strong> of 21 lessons completed</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <span class="course-progress-label" id="progress-pct">0%</span>
+      </div>
+
+      <div class="course-list" id="course-list">
+        <!-- populated by JS from CourseCatalog, filtered to this course -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">Microlearning Portal · your progress is tracked automatically per lesson</div>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/course-catalog.js"></script>
+  <script>
+    (function () {
+      const THIS_COURSE_ID = 'ama';
+
+      const studentId = Storage.getStudentId();
+      if (!studentId) {
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('student-id-display').textContent = studentId;
+
+      document.getElementById('sign-out-btn').addEventListener('click', function () {
+        Storage.clearStudentId();
+        window.location.href = 'index.html';
+      });
+
+      const course = CourseCatalog.find(function (c) { return c.courseId === THIS_COURSE_ID; });
+      if (!course) {
+        document.getElementById('course-list').textContent = 'This course could not be found.';
+        return;
+      }
+
+      // ---- Progress bar ----
+      const completed = Storage.countCompletedForCourse(course.courseId);
+      const total = course.totalLessons;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+      document.getElementById('progress-label').innerHTML = '<strong>' + completed + '</strong> of ' + total + ' lessons completed';
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('progress-fill').style.width = pct + '%';
+
+      // ---- Chapter / lesson list ----
+      // NOTE: the "Completed" badge is a purely cosmetic, LOCAL-ONLY
+      // convenience for the student's own browser (see storage.js). It is
+      // NOT authoritative analytics — the instructor's Dashboard sheet
+      // remains the source of truth for who actually completed what.
+      const listEl = document.getElementById('course-list');
+
+      // Precompute each chapter's completion so we can decide which ONE
+      // chapter to auto-open: the first not-yet-finished chapter, or
+      // chapter 1 if the student has somehow finished everything already.
+      const chapterCompletion = course.chapters.map(function (chapter) {
+        const done = chapter.lessons.filter(function (lesson) {
+          return Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
+        }).length;
+        return { done: done, total: chapter.lessons.length, finished: done === chapter.lessons.length };
+      });
+      let autoOpenIdx = chapterCompletion.findIndex(function (c) { return !c.finished; });
+      if (autoOpenIdx === -1) autoOpenIdx = 0;
+
+      course.chapters.forEach(function (chapter, idx) {
+        const chapterLessonsDone = chapterCompletion[idx].done;
+        const chapterDone = chapterCompletion[idx].finished;
+
+        const chapterCard = document.createElement('details');
+        chapterCard.className = 'course-card';
+        if (idx === autoOpenIdx) chapterCard.open = true;
+
+        const summary = document.createElement('summary');
+        summary.innerHTML =
+          '<div class="course-card-title">' +
+            '<span class="course-id-tag">Ch. ' + chapter.chapterId + '</span>' +
+            '<h2>' + chapter.chapterTitle + '</h2>' +
+          '</div>' +
+          '<span class="chapter-progress-tag">' + chapterLessonsDone + '/' + chapter.lessons.length + (chapterDone ? ' \u2713' : '') + '</span>' +
+          '<svg class="disclosure-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        chapterCard.appendChild(summary);
+
+        const chapterBlock = document.createElement('div');
+        chapterBlock.className = 'chapter-block';
+
+        chapter.lessons.forEach(function (lesson) {
+          const row = document.createElement('div');
+          row.className = 'lesson-row';
+
+          const link = document.createElement('a');
+          link.className = 'lesson-link';
+          link.href = 'courses/' + course.courseId + '/chapter-' + chapter.chapterId + '/' + lesson.lessonId + '/';
+          link.textContent = 'Lesson ' + lesson.lessonNum + ': ' + lesson.lessonTitle;
+          row.appendChild(link);
+
+          const isCompleted = Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
+          const status = document.createElement('span');
+          status.className = 'lesson-status ' + (isCompleted ? 'completed' : 'not-started');
+          status.textContent = isCompleted ? 'Completed' : 'Not started';
+          row.appendChild(status);
+
+          chapterBlock.appendChild(row);
+        });
+
+        chapterCard.appendChild(chapterBlock);
+        listEl.appendChild(chapterCard);
+      });
+    })();
+  </script>
+</body>
+</html>

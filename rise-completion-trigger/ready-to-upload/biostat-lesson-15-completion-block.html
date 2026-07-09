@@ -1,0 +1,191 @@
+<!--
+  completion-block.html
+  ===========================================================================
+  STANDARDIZED HTML5 COMPLETION TRIGGER — for Rise 360 lessons WITHOUT SCORM
+  reporting turned on (plain HTML5 export).
+
+  WHAT THIS IS
+  Rise's plain "HTML5" export doesn't emit any completion signal on its own
+  — no postMessage, no SCORM calls, nothing. This block is a small, self
+  -contained page you upload as a "Web Object" / embed block on the LAST
+  slide of each lesson, inside Rise's own authoring tool, before exporting.
+  When the student clicks "Finish Lesson" here, it tells the portal the
+  lesson is done.
+
+  HOW TO USE THIS (same steps for every lesson — this is the ONE template)
+  1. In Rise, go to the final slide of the lesson.
+  2. Add a "Web Object" / embed block and upload THIS FILE.
+  3. Open this file in a text editor first and replace the single
+     Epidemiologic Study Designs & Sampling Methods placeholder below with the real lesson title
+     (e.g. "Welcome to the Course — MLS BE 201"). That's the only edit
+     needed per lesson — the trigger logic itself never changes.
+  4. Export the Rise course as HTML5 as usual.
+  5. Drop the export into the lesson's rise/ folder, replacing the
+     placeholder, same as always.
+
+  WHY window.top AND NOT window.parent
+  This block gets loaded as a NESTED iframe: portal wrapper page
+  → Rise's own exported index.html (loaded in OUR "rise-frame" iframe)
+  → THIS block (loaded in a further iframe inside Rise's own page).
+  window.parent from inside this block only reaches Rise's own page —
+  NOT the portal wrapper page where js/rise-integration.js is actually
+  listening for the completion message. window.top always reaches the
+  outermost window no matter how many frames are nested in between, so
+  it reaches the portal wrapper directly regardless of how Rise structures
+  its own internal frames. Do not change this back to window.parent.
+
+  The message shape below, { type: 'complete' }, matches what
+  js/rise-integration.js already listens for (see Strategy 1 in that file)
+  — no changes needed anywhere else in the portal for this to work.
+===========================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finish Lesson</title>
+  <style>
+    :root {
+      --paper: #fafbfd;
+      --ink: #1a2433;
+      --ink-soft: #56627a;
+      --blue-700: #1e4fa8;
+      --blue-600: #2a5cc0;
+      --blue-050: #f3f6fd;
+      --green-600: #2f7a4f;
+      --line: #dce3ef;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 32px 20px;
+      text-align: center;
+    }
+    .block-card {
+      max-width: 420px;
+      width: 100%;
+    }
+    #initial-state, #result-state {
+      animation: fadeIn 0.35s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 0 0 18px;
+      color: var(--ink);
+    }
+    #finish-btn {
+      background: var(--blue-700);
+      color: #ffffff;
+      border: none;
+      padding: 14px 32px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    #finish-btn:hover {
+      background: var(--blue-600);
+    }
+    #finish-btn:disabled {
+      background: var(--ink-soft);
+      cursor: default;
+    }
+    .check-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--blue-050);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .check-badge svg {
+      width: 26px;
+      height: 26px;
+    }
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green-600);
+      margin: 0 0 8px;
+    }
+    .result-message {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      margin: 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="block-card">
+
+    <div id="initial-state">
+      <h1>Epidemiologic Study Designs & Sampling Methods</h1>
+      <button id="finish-btn" type="button">Finish Lesson</button>
+    </div>
+
+    <div id="result-state" style="display:none;">
+      <div class="check-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2f7a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <p class="result-title">Lesson Complete</p>
+      <p class="result-message">Your progress has been recorded. You can close this window or return to the course list.</p>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var finishBtn = document.getElementById('finish-btn');
+      var initialState = document.getElementById('initial-state');
+      var resultState = document.getElementById('result-state');
+      var fired = false;
+
+      function fireCompletion() {
+        if (fired) return;
+        fired = true;
+
+        initialState.style.display = 'none';
+        resultState.style.display = 'block';
+
+        try {
+          // window.top, NOT window.parent — see the comment block at the
+          // top of this file for why. This is the ONLY line that talks to
+          // the portal; everything else here is just the visible UI.
+          window.top.postMessage({ type: 'complete' }, '*');
+        } catch (err) {
+          // Harmless if this ever runs outside the portal's nested iframe
+          // setup (e.g. previewing the block file directly in a browser).
+          console.warn('Completion message could not be sent (not running inside the portal frame):', err);
+        }
+      }
+
+      finishBtn.addEventListener('click', fireCompletion);
+    })();
+  </script>
+
+</body>
+</html>
