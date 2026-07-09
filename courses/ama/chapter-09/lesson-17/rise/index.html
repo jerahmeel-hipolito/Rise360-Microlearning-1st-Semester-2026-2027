@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Placeholder Lesson Content</title>
+<style>
+  body { font-family: Georgia, serif; background: #fafbfd; color: #1a2433; max-width: 640px; margin: 60px auto; padding: 0 24px; line-height: 1.6; }
+  h1 { font-size: 1.25rem; margin-bottom: 4px; }
+  p.meta { font-family: monospace; font-size: 0.8rem; color: #677088; margin-top: 0; }
+  button { font-family: inherit; font-size: 1rem; padding: 10px 18px; margin-top: 24px; cursor: pointer; background: #1e4fa8; border: none; border-radius: 4px; color: #ffffff; font-weight: 600; }
+  button:disabled { opacity: 0.6; cursor: default; }
+  code { background: #e8eefb; padding: 2px 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+  <h1>CFA: Model Specification, Identification & Fit</h1>
+  <p class="meta">AMA &middot; Chapter 09 &middot; Lesson 17</p>
+  <p>Replace everything in this <code>rise/</code> folder with the unzipped contents of the real Rise 360 HTML5 export for this lesson (its own <code>index.html</code>, assets, etc.).</p>
+  <button id="simulate-complete-btn">Simulate lesson completion</button>
+  <script>
+    document.getElementById('simulate-complete-btn').addEventListener('click', function () {
+      window.parent.postMessage({ status: 'completed' }, '*');
+      this.textContent = 'Completion signal sent \u2713';
+      this.disabled = true;
+    });
+  </script>
+</body>
+</html>

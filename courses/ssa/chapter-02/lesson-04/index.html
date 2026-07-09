@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson — Missing Values & Outliers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../css/portal.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="shell shell-wide">
+      <div class="brand">Microlearning <span class="brand-mark">Portal</span></div>
+      <div class="student-chip">
+        <span id="student-id-display">—</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell shell-wide">
+
+      <div class="lesson-meta-bar">
+        <span class="lesson-meta-left">
+          <button id="sidebar-toggle-btn" type="button" class="sidebar-toggle-btn" aria-expanded="true" title="Hide course navigation">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor"/>
+              <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"/>
+              <rect x="3" y="17" width="18" height="2" rx="1" fill="currentColor"/>
+            </svg>
+          </button>
+          <span>SSA<span class="crumb-sep">/</span>Chapter 02<span class="crumb-sep">/</span>Lesson 04</span>
+        </span>
+        <a href="../../../../course-ssa.html">&larr; Back to SSA</a>
+      </div>
+
+      <div class="lesson-layout">
+
+        <!--
+          Populated by js/lesson-nav.js from CourseCatalog — lists every
+          course/lesson, expands the course containing THIS lesson, and
+          marks this lesson active. Don't hand-edit; edit
+          js/course-catalog.js instead and this fills in automatically.
+          Collapsible via #sidebar-toggle-btn above (js/lesson-nav.js),
+          shown by default, remembered per-browser thereafter.
+        -->
+        <aside class="lesson-sidebar" id="lesson-sidebar"></aside>
+
+        <div class="lesson-main">
+          <div class="lesson-title-row">
+            <h1>Missing Values & Outliers</h1>
+          </div>
+          <div class="lesson-frame-wrap">
+            <!--
+              The Rise 360 export's own exported index.html goes here,
+              unzipped into this same lesson folder as e.g. "rise/index.html",
+              and is loaded in this iframe. Wrapping it this way means the
+              Rise export itself never needs tracking.js injected into it
+              directly — all tracking lives in THIS wrapper page instead,
+              which is what actually gets edited/maintained.
+
+              For HTML5 (non-SCORM) Rise exports: add the standardized
+              completion-trigger block (see
+              /rise-completion-trigger/completion-block.html at the repo
+              root) as the last block on this lesson's final slide inside
+              Rise itself, before exporting. It posts
+              window.top.postMessage({type: 'complete'}, '*') — which
+              js/rise-integration.js on THIS page is already listening for.
+            -->
+            <iframe
+              id="rise-frame"
+              src="rise/index.html"
+              title="Missing Values & Outliers"
+              allow="autoplay"
+            ></iframe>
+          </div>
+
+          <div class="lesson-next-row">
+            <!-- text/href filled in by js/lesson-nav.js based on CourseCatalog order -->
+            <a id="next-lesson-link" class="btn-next" href="../../../../course-ssa.html">Next Lesson &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell shell-wide">Microlearning Portal · this lesson's progress is recorded automatically</div>
+  </footer>
+
+  <script src="../../../../js/storage.js"></script>
+  <script src="../../../../js/api.js"></script>
+  <script src="../../../../js/tracking.js"></script>
+  <script src="../../../../js/rise-integration.js"></script>
+  <script src="../../../../js/course-catalog.js"></script>
+  <script src="../../../../js/lesson-nav.js"></script>
+  <script>
+    document.getElementById('student-id-display').textContent = Storage.getStudentId() || '—';
+
+    // Manual fallback for testing/demo purposes only — remove once real
+    // Rise completion detection (rise-integration.js) is confirmed working
+    // for this lesson's specific Rise export configuration. Useful while
+    // developing: open devtools console and run window.markLessonComplete()
+    // to simulate Rise signaling completion.
+  </script>
+</body>
+</html>
