@@ -21,7 +21,7 @@
 const Api = {
   // Replace with the deployed Apps Script web app URL after deployment.
   // See apps-script/CodeJS.gs deployment notes.
-  ENDPOINT_URL: 'PASTE_DEPLOYED_APPS_SCRIPT_URL_HERE',
+  ENDPOINT_URL: 'https://script.google.com/macros/s/AKfycbw5w84zxBHCY02cRL2Xlbwwlc0RtzuSLHcGAcCmf8d7nh8ViWYvZYWlAx_Ftc-eJD4n_A/exec',
 
   async send(payload) {
     try {
