@@ -159,6 +159,37 @@
     }
   }
 
+  // "Previous lesson" — same catalog order as wireNextButton, just walking
+  // one entry back instead of forward. Order is deliberately the full
+  // cross-course CourseCatalog order (not "previous within this chapter
+  // only"), matching how "next" already crosses chapter/course boundaries,
+  // so the two buttons stay a consistent, predictable pair.
+  function wirePrevButton(loc, flat, root) {
+    const link = document.getElementById('prev-lesson-link');
+    if (!link) return;
+
+    const idx = flat.findIndex(function (entry) {
+      return !!loc &&
+        entry.courseId === loc.courseId &&
+        entry.chapterFolder === loc.chapterFolder &&
+        entry.lessonFolder === loc.lessonFolder;
+    });
+
+    if (idx === -1) {
+      link.style.display = 'none';
+      return;
+    }
+
+    const prev = flat[idx - 1];
+    if (prev) {
+      link.href = root + 'courses/' + prev.courseId + '/' + prev.chapterFolder + '/' + prev.lessonFolder + '/';
+      link.textContent = '← Previous: ' + prev.lessonTitle;
+    } else {
+      // Very first lesson in the very first course — nothing before it.
+      link.style.display = 'none';
+    }
+  }
+
   // ---------- Collapsible sidebar ----------
   // Lets a student hide the course nav to focus on just the lesson player.
   // Shown by default on every visit (per the project brief); the choice to
@@ -203,6 +234,7 @@
     const flat = flattenLessons();
     buildSidebar(loc, flat, root);
     wireNextButton(loc, flat, root);
+    wirePrevButton(loc, flat, root);
     wireSidebarToggle();
   });
 })();

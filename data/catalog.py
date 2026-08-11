@@ -26,8 +26,8 @@ COURSES = [
             ]},
             {"num": 3, "title": "Descriptive Statistics, Probability & Distributions", "lessons": [
                 "Descriptive Statistics — Central Tendency, Dispersion & Shape",
-                "Probability Concepts & Basic Rules",
-                "Probability Distributions",
+                "Foundations of Probability — Part 1",
+                "Foundations of Probability — Part 2",
             ]},
             {"num": 4, "title": "Epidemiology Foundations", "lessons": [
                 "Measures of Disease Frequency",
@@ -68,7 +68,7 @@ COURSES = [
             ]},
             {"num": 3, "title": "Data Visualization & Storytelling", "lessons": [
                 "Grammar of Graphics & ggplot2 Basics",
-                "Storytelling with Data",
+                "Storytelling with Data: Reshape & Reveal",
             ]},
             {"num": 4, "title": "Exploratory Data Analysis (EDA)", "lessons": [
                 "Descriptive Statistics",
@@ -108,7 +108,7 @@ COURSES = [
             ]},
             {"num": 3, "title": "Regression: MLR Review & Extensions", "lessons": [
                 "Multiple Linear Regression — Deep Review",
-                "MLR Extensions: MMR & Intro to Logistic Regression",
+                "MLR Extensions: Multivariate Multiple Regression",
             ]},
             {"num": 4, "title": "MANOVA, Repeated Measures & Mixed Designs — Overview", "lessons": [
                 "MANOVA: Rationale, Assumptions & Interpretation",

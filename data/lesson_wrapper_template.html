@@ -79,7 +79,11 @@
           </div>
 
           <div class="lesson-next-row">
-            <!-- text/href filled in by js/lesson-nav.js based on CourseCatalog order -->
+            <!-- text/href for both filled in by js/lesson-nav.js based on
+                 CourseCatalog order. prev-lesson-link is hidden by
+                 lesson-nav.js when this is the very first lesson overall
+                 (nothing to go back to). -->
+            <a id="prev-lesson-link" class="btn-prev" href="../../../../course-__COURSE_ID__.html">&larr; Previous Lesson</a>
             <a id="next-lesson-link" class="btn-next" href="../../../../course-__COURSE_ID__.html">Next Lesson &rarr;</a>
           </div>
         </div>

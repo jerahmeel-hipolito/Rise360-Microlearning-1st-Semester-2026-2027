@@ -68,6 +68,37 @@ const Api = {
     }
   },
 
+  // Cross-device progress lookup: asks the backend "what has THIS studentId
+  // completed, on any device?" instead of trusting only this browser's own
+  // localStorage. Sent through the exact same POST/text-plain channel as
+  // send() above (a lightweight { action: 'getProgress' } body instead of
+  // a full analytics payload) — reusing this channel, rather than adding a
+  // doGet-based endpoint, is deliberate: doGet responses from Apps Script
+  // web apps can't reliably be read cross-origin by fetch(), while this
+  // POST channel is already proven working for the analytics payloads
+  // above. Always resolves (never throws) so a slow/offline backend just
+  // means the page falls back to local-only state, never a broken page.
+  async fetchProgress(studentId) {
+    try {
+      const response = await fetch(this.ENDPOINT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getProgress', studentId: studentId })
+      });
+      const result = await response.json();
+      if (result.success && Array.isArray(result.completedLessonIds)) {
+        return result.completedLessonIds;
+      }
+      return null; // 404 (unrecognized ID) or any other logical failure
+    } catch (err) {
+      // Offline, DNS failure, Apps Script unreachable, etc — fail quietly.
+      // This is a nice-to-have sync, not something that should show an
+      // error to the student or block the page.
+      console.warn('Could not fetch cross-device progress, showing local-only state:', err);
+      return null;
+    }
+  },
+
   // Called on every page load (see tracking.js init) to opportunistically
   // drain anything that failed to send on a previous visit.
   async flushPendingQueue() {

@@ -95,8 +95,21 @@ const Storage = {
   // globally-unique composite IDs sent to the backend (see tracking.js) —
   // this key only ever needs to be unique within one browser's storage.
 
+  // BUGFIX: chapterNum/lessonNum arrive in TWO different shapes depending on
+  // the caller — tracking.js derives them from the URL folder name, which
+  // are already zero-padded strings ("06"), while course-*.html derives
+  // them from course-catalog.js's `lessonNum` field, which is a plain
+  // unpadded integer (6). "06" !== "6" as an object key, so a lesson
+  // marked complete by tracking.js could never be found by course-*.html's
+  // lookup — every lesson silently read back as "Not started" regardless
+  // of actual completion. Normalizing both sides to a 2-digit zero-padded
+  // string here means every caller produces an identical key no matter
+  // which shape it started from. Padding to 2 digits is safe up to 99
+  // chapters/lessons, comfortably above this project's real scale.
   _completionKey(courseId, chapterNum, lessonNum) {
-    return 'completed_' + courseId + '_' + chapterNum + '_' + lessonNum;
+    const ch = String(chapterNum).padStart(2, '0');
+    const le = String(lessonNum).padStart(2, '0');
+    return 'completed_' + courseId + '_' + ch + '_' + le;
   },
 
   markLessonCompletedLocally(courseId, chapterNum, lessonNum) {

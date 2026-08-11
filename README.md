@@ -16,10 +16,12 @@ To regenerate everything after editing `data/catalog.py`:
 
 ```bash
 python3 data/build_catalog_json.py > data/catalog.json   # rebuilds the shared JSON
+python3 generate_course_catalog_js.py                     # rebuilds js/course-catalog.js from catalog.json
 python3 generate_lessons.py                                # regenerates all lesson wrapper pages (never touches an existing rise/index.html)
+python3 generate_course_pages.py                           # regenerates course-biostatistics.html / course-ssa.html / course-ama.html
 ```
 
-Then manually re-inject the new catalog JSON into `js/course-catalog.js` (replace the `const CourseCatalog = [...]` array with the contents of `data/catalog.json`), regenerate `course-biostatistics.html` / `course-ssa.html` / `course-ama.html` from `data/course_detail_template.html`, and re-run `setupSpreadsheet()` in Apps Script so the Lesson/Course Catalog sheet tabs pick up the change (it only adds rows for IDs that don't already exist — see `apps-script/README.md`).
+Then re-run `setupSpreadsheet()` in Apps Script so the Lesson/Course Catalog sheet tabs pick up any NEW rows (it only adds rows for IDs that don't already exist — see `apps-script/README.md`). **If you renamed an existing lesson's title (not added a new one), `setupSpreadsheet()` will NOT update it** — that row's LessonID already exists, so it's skipped. Open the live Google Sheet's **Lesson Catalog** tab and edit that title by hand; otherwise the Activity Log will keep writing the OLD title for that lesson (it's looked up fresh from the sheet on every submission, not from what's baked into `Code.gs`).
 
 ## What's in this repo
 
@@ -36,7 +38,8 @@ js/
   tracking.js                  Lesson lifecycle: timer, session ID, globally-unique ID construction, payload construction
   rise-integration.js          Bridges Rise 360's completion signal to tracking.js
   course-catalog.js            Frontend course/chapter/lesson data — GENERATED from data/catalog.py, don't hand-edit
-  lesson-nav.js                Builds the lesson sidebar (grouped by chapter) + collapsible toggle + Next Lesson link
+  lesson-nav.js                Builds the lesson sidebar (grouped by chapter) + collapsible toggle + Previous/Next Lesson links
+  progress-sync.js             Pulls a student's completions from the backend (any device) and merges them into local completion flags — see "Cross-device progress" below
 courses/
   biostatistics/  chapter-01/ .. chapter-08/   16 lessons  (MLSBE 201 — Biostatistics and Epidemiology)
   ssa/            chapter-01/ .. chapter-08/   16 lessons  (MAS 303a — Statistical Software Application)
@@ -47,8 +50,8 @@ apps-script/
   README.md                     Step-by-step Apps Script deployment walkthrough
   dashboard-formulas.md         Documents the 6 formula blocks buildDashboardSheet() writes automatically
 dev-tests/
-  frontend_smoke_test.js        Node-based regression test for js/*.js (12/12 as of last edit)
-  apps_script_smoke_test.js     Node-based regression test for Code.gs (30/30 as of last edit), incl. the duplicate-session race condition and the ID-collision bugfix
+  frontend_smoke_test.js        Node-based regression test for js/*.js (20/20 as of last edit)
+  apps_script_smoke_test.js     Node-based regression test for Code.gs (35/35 as of last edit), incl. the duplicate-session race condition, the ID-collision bugfix, and the getProgress cross-device sync endpoint
 data/
   catalog.py                    THE MASTERLIST — single source of truth, see above
   catalog.json                  Generated from catalog.py, consumed by course-catalog.js
@@ -57,9 +60,19 @@ data/
   rise_placeholder_template.html  Template for each rise/index.html placeholder
   course_detail_template.html   Template the 3 course-*.html pages are generated from
 generate_lessons.py           Regenerates all 53 lesson wrapper + placeholder pages from data/catalog.py — safe to re-run any time
+generate_course_catalog_js.py Regenerates js/course-catalog.js from data/catalog.json — safe to re-run any time
+generate_course_pages.py      Regenerates course-biostatistics.html / course-ssa.html / course-ama.html from data/course_detail_template.html — safe to re-run any time
 ```
 
 Every `courses/.../lesson-NN/` folder currently contains a placeholder `rise/index.html` stand-in with a "Simulate lesson completion" button — see **Part 4** below for exactly how to swap each one for your real Rise 360 export.
+
+## Cross-device progress ("Completed" badges follow the student, not the browser)
+
+The green "Completed" badges on `courses.html` / `course-*.html` and the sidebar checkmarks on lesson pages are, at their core, a **local browser flag** (see `storage.js`) — that's unavoidable without real accounts, and stays true to this project's no-accounts design (see the project skill's non-goals). But on page load, `course-*.html` now also calls `ProgressSync.pull()` (`js/progress-sync.js`), which asks the backend "what has this Student ID actually completed, on ANY device?" via a new `getProgress` action on the existing `doPost` endpoint (`Code.gs`), and merges the answer in. So: a student who finishes lessons on their phone and later opens a laptop will see those lessons already checked off there too, typically within a second or two of the page loading — no login required, since Student ID is already the identity key this whole system runs on.
+
+This is purely additive (it only ever turns a local flag ON) and fails silently if the backend is slow/unreachable, so it can never make the page worse, only sometimes not-yet-synced.
+
+**If you change `Code.gs`, you must redeploy** (Apps Script → Manage deployments → Edit → New version) for `getProgress` to actually go live at your existing Web App URL — same as any other backend change, see the deployment note at the top of `Code.gs`.
 
 ---
 

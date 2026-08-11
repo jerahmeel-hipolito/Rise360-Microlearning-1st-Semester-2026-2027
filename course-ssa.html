@@ -49,10 +49,13 @@
   </footer>
 
   <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/course-catalog.js"></script>
+  <script src="js/progress-sync.js"></script>
   <script>
     (function () {
       const THIS_COURSE_ID = 'ssa';
+      const CHECK_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
       const studentId = Storage.getStudentId();
       if (!studentId) {
@@ -72,75 +75,115 @@
         return;
       }
 
-      // ---- Progress bar ----
-      const completed = Storage.countCompletedForCourse(course.courseId);
-      const total = course.totalLessons;
-      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-      document.getElementById('progress-label').innerHTML = '<strong>' + completed + '</strong> of ' + total + ' lessons completed';
-      document.getElementById('progress-pct').textContent = pct + '%';
-      document.getElementById('progress-fill').style.width = pct + '%';
-
-      // ---- Chapter / lesson list ----
-      // NOTE: the "Completed" badge is a purely cosmetic, LOCAL-ONLY
-      // convenience for the student's own browser (see storage.js). It is
-      // NOT authoritative analytics — the instructor's Dashboard sheet
-      // remains the source of truth for who actually completed what.
       const listEl = document.getElementById('course-list');
 
-      // Precompute each chapter's completion so we can decide which ONE
-      // chapter to auto-open: the first not-yet-finished chapter, or
-      // chapter 1 if the student has somehow finished everything already.
-      const chapterCompletion = course.chapters.map(function (chapter) {
-        const done = chapter.lessons.filter(function (lesson) {
-          return Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
-        }).length;
-        return { done: done, total: chapter.lessons.length, finished: done === chapter.lessons.length };
-      });
-      let autoOpenIdx = chapterCompletion.findIndex(function (c) { return !c.finished; });
-      if (autoOpenIdx === -1) autoOpenIdx = 0;
+      // Reads which chapters are currently expanded in the DOM, keyed by
+      // chapter index, so a re-render (triggered after cross-device
+      // progress syncs in — see ProgressSync.pull below) doesn't collapse
+      // a chapter the student already opened themselves. Returns null on
+      // the very first render (nothing in the DOM yet), which tells
+      // render() to fall back to its own auto-open-first-unfinished logic.
+      function captureOpenState() {
+        const cards = listEl.querySelectorAll('.course-card');
+        if (cards.length === 0) return null;
+        return Array.prototype.map.call(cards, function (el) { return el.open; });
+      }
 
-      course.chapters.forEach(function (chapter, idx) {
-        const chapterLessonsDone = chapterCompletion[idx].done;
-        const chapterDone = chapterCompletion[idx].finished;
+      // Builds the progress bar + chapter/lesson list from local completion
+      // state. Safe to call more than once (e.g. once immediately, then
+      // again after ProgressSync.pull merges in cross-device completions) —
+      // it fully clears and rebuilds #course-list each time.
+      //
+      // NOTE: the "Completed" badge reflects this student's Activity Log
+      // history (local flags, refreshed from the backend via
+      // ProgressSync — see progress-sync.js). It is NOT a second source of
+      // truth — the instructor's Dashboard sheet remains authoritative for
+      // grading/analytics purposes; this is purely a student-facing
+      // convenience.
+      function render(openState) {
+        // ---- Progress bar ----
+        const completed = Storage.countCompletedForCourse(course.courseId);
+        const total = course.totalLessons;
+        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+        document.getElementById('progress-label').innerHTML = '<strong>' + completed + '</strong> of ' + total + ' lessons completed';
+        document.getElementById('progress-pct').textContent = pct + '%';
+        document.getElementById('progress-fill').style.width = pct + '%';
 
-        const chapterCard = document.createElement('details');
-        chapterCard.className = 'course-card';
-        if (idx === autoOpenIdx) chapterCard.open = true;
+        // ---- Chapter / lesson list ----
+        listEl.innerHTML = '';
 
-        const summary = document.createElement('summary');
-        summary.innerHTML =
-          '<div class="course-card-title">' +
-            '<span class="course-id-tag">Ch. ' + chapter.chapterId + '</span>' +
-            '<h2>' + chapter.chapterTitle + '</h2>' +
-          '</div>' +
-          '<span class="chapter-progress-tag">' + chapterLessonsDone + '/' + chapter.lessons.length + (chapterDone ? ' \u2713' : '') + '</span>' +
-          '<svg class="disclosure-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        chapterCard.appendChild(summary);
-
-        const chapterBlock = document.createElement('div');
-        chapterBlock.className = 'chapter-block';
-
-        chapter.lessons.forEach(function (lesson) {
-          const row = document.createElement('div');
-          row.className = 'lesson-row';
-
-          const link = document.createElement('a');
-          link.className = 'lesson-link';
-          link.href = 'courses/' + course.courseId + '/chapter-' + chapter.chapterId + '/' + lesson.lessonId + '/';
-          link.textContent = 'Lesson ' + lesson.lessonNum + ': ' + lesson.lessonTitle;
-          row.appendChild(link);
-
-          const isCompleted = Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
-          const status = document.createElement('span');
-          status.className = 'lesson-status ' + (isCompleted ? 'completed' : 'not-started');
-          status.textContent = isCompleted ? 'Completed' : 'Not started';
-          row.appendChild(status);
-
-          chapterBlock.appendChild(row);
+        const chapterCompletion = course.chapters.map(function (chapter) {
+          const done = chapter.lessons.filter(function (lesson) {
+            return Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
+          }).length;
+          return { done: done, total: chapter.lessons.length, finished: done === chapter.lessons.length };
         });
 
-        chapterCard.appendChild(chapterBlock);
-        listEl.appendChild(chapterCard);
+        // First render (openState is null): auto-open the first
+        // not-yet-finished chapter. Re-render (openState provided):
+        // restore exactly what the student had open/closed themselves.
+        let autoOpenIdx = -1;
+        if (!openState) {
+          autoOpenIdx = chapterCompletion.findIndex(function (c) { return !c.finished; });
+          if (autoOpenIdx === -1) autoOpenIdx = 0;
+        }
+
+        course.chapters.forEach(function (chapter, idx) {
+          const chapterLessonsDone = chapterCompletion[idx].done;
+          const chapterDone = chapterCompletion[idx].finished;
+
+          const chapterCard = document.createElement('details');
+          chapterCard.className = 'course-card';
+          chapterCard.open = openState ? !!openState[idx] : (idx === autoOpenIdx);
+
+          const summary = document.createElement('summary');
+          summary.innerHTML =
+            '<div class="course-card-title">' +
+              '<span class="course-id-tag">Ch. ' + chapter.chapterId + '</span>' +
+              '<h2>' + chapter.chapterTitle + '</h2>' +
+            '</div>' +
+            '<span class="chapter-progress-tag">' + chapterLessonsDone + '/' + chapter.lessons.length + (chapterDone ? ' \u2713' : '') + '</span>' +
+            '<svg class="disclosure-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          chapterCard.appendChild(summary);
+
+          const chapterBlock = document.createElement('div');
+          chapterBlock.className = 'chapter-block';
+
+          chapter.lessons.forEach(function (lesson) {
+            const row = document.createElement('div');
+            row.className = 'lesson-row';
+
+            const link = document.createElement('a');
+            link.className = 'lesson-link';
+            link.href = 'courses/' + course.courseId + '/chapter-' + chapter.chapterId + '/' + lesson.lessonId + '/';
+            link.textContent = 'Lesson ' + lesson.lessonNum + ': ' + lesson.lessonTitle;
+            row.appendChild(link);
+
+            const isCompleted = Storage.isLessonCompletedLocally(course.courseId, chapter.chapterId, lesson.lessonNum);
+            const status = document.createElement('span');
+            status.className = 'lesson-status ' + (isCompleted ? 'completed' : 'not-started');
+            status.innerHTML = isCompleted ? (CHECK_ICON + '<span>Completed</span>') : '<span>Not started</span>';
+            row.appendChild(status);
+            if (isCompleted) row.classList.add('lesson-row-completed');
+
+            chapterBlock.appendChild(row);
+          });
+
+          chapterCard.appendChild(chapterBlock);
+          listEl.appendChild(chapterCard);
+        });
+      }
+
+      render(null);
+
+      // Cross-device sync: pull this student's completions from the
+      // backend (any device/browser) and, only if that actually changes
+      // anything this browser didn't already know about, re-render so the
+      // student doesn't have to open a lesson first to see it reflected
+      // here. Runs in the background — the page is already fully usable
+      // before this resolves.
+      ProgressSync.pull(studentId, function () {
+        render(captureOpenState());
       });
     })();
   </script>

@@ -49,12 +49,12 @@
           },
           {
             "lessonId": "lesson-06",
-            "lessonTitle": "Probability Concepts & Basic Rules",
+            "lessonTitle": "Foundations of Probability — Part 1",
             "lessonNum": 6
           },
           {
             "lessonId": "lesson-07",
-            "lessonTitle": "Probability Distributions",
+            "lessonTitle": "Foundations of Probability — Part 2",
             "lessonNum": 7
           }
         ]
@@ -191,7 +191,7 @@
           },
           {
             "lessonId": "lesson-07",
-            "lessonTitle": "Storytelling with Data",
+            "lessonTitle": "Storytelling with Data: Reshape & Reveal",
             "lessonNum": 7
           }
         ]
@@ -323,7 +323,7 @@
           },
           {
             "lessonId": "lesson-06",
-            "lessonTitle": "MLR Extensions: MMR & Intro to Logistic Regression",
+            "lessonTitle": "MLR Extensions: Multivariate Multiple Regression",
             "lessonNum": 6
           }
         ]

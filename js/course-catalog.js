@@ -8,12 +8,17 @@
  * analytics lookups server-side; this file only drives what the student
  * sees and clicks.
  *
+ * GENERATED FILE — do not hand-edit. Edit data/catalog.py, then run:
+ *   python3 data/build_catalog_json.py > data/catalog.json
+ *   python3 generate_course_catalog_js.py
+ * (or just run generate_all.sh, if present, to do the whole chain at once)
+ *
  * WEEKLY PUBLISHING WORKFLOW: when you add a new lesson folder under
- * /courses/, add one entry here too (and a matching row in the Lesson
- * Catalog sheet tab) — this is the "update navigation" step referenced in
- * the project skill's deployment-and-testing.md. Forgetting this step
- * means the lesson exists and will still log correctly if visited
- * directly, it just won't show up as a link for students to find.
+ * /courses/, add one entry to data/catalog.py too (and a matching row in
+ * the Lesson Catalog sheet tab) — this is the "update navigation" step
+ * referenced in the project skill's deployment-and-testing.md. Forgetting
+ * this step means the lesson exists and will still log correctly if
+ * visited directly, it just won't show up as a link for students to find.
  */
 
 const CourseCatalog = [
@@ -67,12 +72,12 @@ const CourseCatalog = [
           },
           {
             "lessonId": "lesson-06",
-            "lessonTitle": "Probability Concepts & Basic Rules",
+            "lessonTitle": "Foundations of Probability — Part 1",
             "lessonNum": 6
           },
           {
             "lessonId": "lesson-07",
-            "lessonTitle": "Probability Distributions",
+            "lessonTitle": "Foundations of Probability — Part 2",
             "lessonNum": 7
           }
         ]
@@ -209,7 +214,7 @@ const CourseCatalog = [
           },
           {
             "lessonId": "lesson-07",
-            "lessonTitle": "Storytelling with Data",
+            "lessonTitle": "Storytelling with Data: Reshape & Reveal",
             "lessonNum": 7
           }
         ]
@@ -341,7 +346,7 @@ const CourseCatalog = [
           },
           {
             "lessonId": "lesson-06",
-            "lessonTitle": "MLR Extensions: MMR & Intro to Logistic Regression",
+            "lessonTitle": "MLR Extensions: Multivariate Multiple Regression",
             "lessonNum": 6
           }
         ]
