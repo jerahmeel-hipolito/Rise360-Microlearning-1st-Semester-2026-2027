@@ -40,6 +40,7 @@
             <p class="eyebrow">Statistics Coursework</p>
             <h1>Pick up where the lecture leaves off.</h1>
             <p>Short, self-paced lessons for three courses. Enter your Student ID once — every lesson after this will recognize you automatically.</p>
+            <p class="hero-stat-line" id="hero-stat-line"></p>
             <div class="course-tags">
               <span class="course-tag"><span class="code">BIOSTAT</span> Biostatistics &amp; Epidemiology</span>
               <span class="course-tag"><span class="code">SSA</span> Statistical Software Application</span>
@@ -87,6 +88,18 @@
   </footer>
 
   <script src="js/storage.js"></script>
+  <script src="js/course-catalog.js"></script>
+  <script>
+    // A real, catalog-derived number (not static marketing copy) — stays
+    // correct automatically as courses.json/course-catalog.js grows, same
+    // "single source of truth" principle used everywhere else in this repo.
+    (function renderHeroStat() {
+      const totalLessons = CourseCatalog.reduce(function (sum, c) { return sum + c.totalLessons; }, 0);
+      const totalChapters = CourseCatalog.reduce(function (sum, c) { return sum + c.chapters.length; }, 0);
+      document.getElementById('hero-stat-line').textContent =
+        totalLessons + ' lessons across ' + totalChapters + ' chapters, ' + CourseCatalog.length + ' courses.';
+    })();
+  </script>
   <script>
     // Landing page logic lives inline (not in a shared module) since this
     // page's behavior — the sign-in form itself — is unique to this one page.

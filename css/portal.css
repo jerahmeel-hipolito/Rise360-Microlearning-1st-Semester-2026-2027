@@ -214,6 +214,13 @@ main {
   font-size: 1.02rem;
 }
 
+.hero-stat-line {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin: 4px 0 0;
+}
+
 /* Signature element: course code "spine labels" — styled like the spine
    text on a catalog binder, not a rounded pill badge. Left border instead
    of full outline keeps it quiet and specific to "shelf of courses". */
@@ -434,15 +441,27 @@ main {
   min-width: 0;
 }
 
-.course-id-tag {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--blue-700);
-  border-left: 2px solid var(--blue-500);
-  padding-left: 9px;
+.chapter-num-badge {
   flex-shrink: 0;
-  width: 48px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--blue-050);
+  border: 1px solid var(--blue-100);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--blue-700);
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.course-card:has(> summary:hover) .chapter-num-badge {
+  background: var(--blue-700);
+  border-color: var(--blue-700);
+  color: #ffffff;
 }
 
 .course-card-title h2 {
@@ -737,6 +756,19 @@ main {
   border-radius: var(--radius-md);
   padding: 20px 22px;
   margin-bottom: 30px;
+}
+
+.progress-summary-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--blue-050);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue-700);
+  flex-shrink: 0;
 }
 
 .course-progress-label {

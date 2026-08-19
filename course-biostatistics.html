@@ -31,6 +31,12 @@
       </div>
 
       <div class="course-progress-summary">
+        <div class="progress-summary-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 17l5-5 4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 7h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <span class="course-progress-label" id="progress-label"><strong>0</strong> of 16 lessons completed</span>
         <div class="progress-track">
           <div class="progress-fill" id="progress-fill" style="width:0%"></div>
@@ -140,7 +146,7 @@
           const summary = document.createElement('summary');
           summary.innerHTML =
             '<div class="course-card-title">' +
-              '<span class="course-id-tag">Ch. ' + chapter.chapterId + '</span>' +
+              '<span class="chapter-num-badge">' + chapter.chapterId + '</span>' +
               '<h2>' + chapter.chapterTitle + '</h2>' +
             '</div>' +
             '<span class="chapter-progress-tag ' + chapterState + '">' +
