@@ -131,6 +131,7 @@
         course.chapters.forEach(function (chapter, idx) {
           const chapterLessonsDone = chapterCompletion[idx].done;
           const chapterDone = chapterCompletion[idx].finished;
+          const chapterState = chapterDone ? 'is-complete' : (chapterLessonsDone > 0 ? 'is-partial' : 'is-not-started');
 
           const chapterCard = document.createElement('details');
           chapterCard.className = 'course-card';
@@ -142,7 +143,10 @@
               '<span class="course-id-tag">Ch. ' + chapter.chapterId + '</span>' +
               '<h2>' + chapter.chapterTitle + '</h2>' +
             '</div>' +
-            '<span class="chapter-progress-tag">' + chapterLessonsDone + '/' + chapter.lessons.length + (chapterDone ? ' \u2713' : '') + '</span>' +
+            '<span class="chapter-progress-tag ' + chapterState + '">' +
+              '<span class="chapter-progress-count">' + chapterLessonsDone + '/' + chapter.lessons.length + '</span>' +
+              (chapterDone ? CHECK_ICON : '') +
+            '</span>' +
             '<svg class="disclosure-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
           chapterCard.appendChild(summary);
 

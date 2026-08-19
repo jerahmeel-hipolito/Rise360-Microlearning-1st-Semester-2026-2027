@@ -63,7 +63,7 @@ const CourseCatalog = [
       },
       {
         "chapterId": "03",
-        "chapterTitle": "Descriptive Statistics, Probability & Distributions",
+        "chapterTitle": "Descriptive Statistics and Probability",
         "lessons": [
           {
             "lessonId": "lesson-05",
@@ -74,21 +74,21 @@ const CourseCatalog = [
             "lessonId": "lesson-06",
             "lessonTitle": "Foundations of Probability — Part 1",
             "lessonNum": 6
-          },
-          {
-            "lessonId": "lesson-07",
-            "lessonTitle": "Foundations of Probability — Part 2",
-            "lessonNum": 7
           }
         ]
       },
       {
         "chapterId": "04",
-        "chapterTitle": "Epidemiology Foundations",
+        "chapterTitle": "Probability Applications & Diagnostic Testing",
         "lessons": [
           {
+            "lessonId": "lesson-07",
+            "lessonTitle": "Foundations of Probability — Part 2",
+            "lessonNum": 7
+          },
+          {
             "lessonId": "lesson-08",
-            "lessonTitle": "Measures of Disease Frequency",
+            "lessonTitle": "Bayes' Theorem & Diagnostic Testing",
             "lessonNum": 8
           }
         ]

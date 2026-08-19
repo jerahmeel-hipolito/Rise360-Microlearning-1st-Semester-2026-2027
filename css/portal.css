@@ -385,13 +385,6 @@ main {
   padding-left: 8px;
 }
 
-.chapter-progress-tag {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  color: var(--ink-faint);
-  flex-shrink: 0;
-}
-
 .page-title-row h1 {
   font-family: var(--font-display);
   font-weight: 600;
@@ -410,16 +403,24 @@ main {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper-raised);
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.course-card:has(> summary:hover) {
+  border-color: var(--blue-500);
+  background: var(--blue-050);
 }
 
 .course-card summary {
   list-style: none;
   cursor: pointer;
-  padding: 19px 22px;
-  display: flex;
+  min-height: 62px;
+  padding: 16px 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px 24px;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
+  transition: background-color 180ms ease;
 }
 
 .course-card summary::-webkit-details-marker {
@@ -430,29 +431,67 @@ main {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .course-id-tag {
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 500;
   color: var(--blue-700);
   border-left: 2px solid var(--blue-500);
   padding-left: 9px;
+  flex-shrink: 0;
+  width: 48px;
 }
 
 .course-card-title h2 {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.08rem;
+  line-height: 1.3;
   margin: 0;
   color: var(--ink);
+  min-width: 0;
+}
+
+/* Fixed-width column so "2/2 ✓", "10/10 ✓", and "1/12" all right-align to
+   the same edge instead of each row deciding its own position. */
+.chapter-progress-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chapter-progress-tag.is-complete {
+  color: var(--green-600);
+  font-weight: 500;
+}
+
+.chapter-progress-tag.is-partial {
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.chapter-progress-tag.is-not-started {
+  color: var(--ink-faint);
+  font-weight: 400;
+}
+
+.chapter-progress-tag svg {
+  flex-shrink: 0;
 }
 
 .disclosure-arrow {
   color: var(--ink-faint);
   transition: transform 0.15s ease;
   flex-shrink: 0;
+  justify-self: center;
 }
 
 .course-card[open] .disclosure-arrow {
