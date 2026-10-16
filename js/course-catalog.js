@@ -257,13 +257,8 @@ const CourseCatalog = [
         "lessons": [
           {
             "lessonId": "lesson-12",
-            "lessonTitle": "Correlation Analysis",
+            "lessonTitle": "Correlation & Regression",
             "lessonNum": 12
-          },
-          {
-            "lessonId": "lesson-13",
-            "lessonTitle": "Regression Analysis",
-            "lessonNum": 13
           }
         ]
       },
@@ -272,14 +267,14 @@ const CourseCatalog = [
         "chapterTitle": "Reporting & Reproducibility",
         "lessons": [
           {
-            "lessonId": "lesson-14",
+            "lessonId": "lesson-13",
             "lessonTitle": "R Markdown & Quarto",
-            "lessonNum": 14
+            "lessonNum": 13
           },
           {
-            "lessonId": "lesson-15",
+            "lessonId": "lesson-14",
             "lessonTitle": "APA Reporting & Ethical Practices",
-            "lessonNum": 15
+            "lessonNum": 14
           }
         ]
       },
@@ -288,9 +283,9 @@ const CourseCatalog = [
         "chapterTitle": "Capstone Hackathon",
         "lessons": [
           {
-            "lessonId": "lesson-16",
+            "lessonId": "lesson-15",
             "lessonTitle": "Hackathon Preparation",
-            "lessonNum": 16
+            "lessonNum": 15
           }
         ]
       }
@@ -359,11 +354,6 @@ const CourseCatalog = [
             "lessonId": "lesson-07",
             "lessonTitle": "MANOVA: Rationale, Assumptions & Interpretation",
             "lessonNum": 7
-          },
-          {
-            "lessonId": "lesson-08",
-            "lessonTitle": "Repeated Measures ANOVA & Mixed Designs",
-            "lessonNum": 8
           }
         ]
       },
@@ -372,14 +362,9 @@ const CourseCatalog = [
         "chapterTitle": "Principal Component Analysis (PCA)",
         "lessons": [
           {
-            "lessonId": "lesson-09",
-            "lessonTitle": "PCA: Concepts, Components & Decisions",
-            "lessonNum": 9
-          },
-          {
-            "lessonId": "lesson-10",
-            "lessonTitle": "PCA in SPSS & R: Full Output Walkthrough",
-            "lessonNum": 10
+            "lessonId": "lesson-08",
+            "lessonTitle": "PCA: Concepts, Applications, & Reporting",
+            "lessonNum": 8
           }
         ]
       },
@@ -388,14 +373,9 @@ const CourseCatalog = [
         "chapterTitle": "Exploratory Factor Analysis (EFA)",
         "lessons": [
           {
-            "lessonId": "lesson-11",
-            "lessonTitle": "EFA Foundations: Model, Extraction & Rotation",
-            "lessonNum": 11
-          },
-          {
-            "lessonId": "lesson-12",
-            "lessonTitle": "Determining Number of Factors & Reporting EFA",
-            "lessonNum": 12
+            "lessonId": "lesson-09",
+            "lessonTitle": "EFA: Model, Extraction, Retention & Reporting",
+            "lessonNum": 9
           }
         ]
       },
@@ -404,14 +384,9 @@ const CourseCatalog = [
         "chapterTitle": "EFA Deep Dive: Reliability & Scale Validation",
         "lessons": [
           {
-            "lessonId": "lesson-13",
+            "lessonId": "lesson-10",
             "lessonTitle": "Reliability Analysis: Alpha, Omega & Item Analysis",
-            "lessonNum": 13
-          },
-          {
-            "lessonId": "lesson-14",
-            "lessonTitle": "The EFA → Reliability → CFA Pipeline",
-            "lessonNum": 14
+            "lessonNum": 10
           }
         ]
       },
@@ -420,14 +395,9 @@ const CourseCatalog = [
         "chapterTitle": "Cluster Analysis",
         "lessons": [
           {
-            "lessonId": "lesson-15",
+            "lessonId": "lesson-11",
             "lessonTitle": "Cluster Analysis Foundations: Distance, Hierarchy & K-Means",
-            "lessonNum": 15
-          },
-          {
-            "lessonId": "lesson-16",
-            "lessonTitle": "Cluster Validation, Profiling & Reporting",
-            "lessonNum": 16
+            "lessonNum": 11
           }
         ]
       },
@@ -436,14 +406,9 @@ const CourseCatalog = [
         "chapterTitle": "Confirmatory Factor Analysis (CFA)",
         "lessons": [
           {
-            "lessonId": "lesson-17",
+            "lessonId": "lesson-12",
             "lessonTitle": "CFA: Model Specification, Identification & Fit",
-            "lessonNum": 17
-          },
-          {
-            "lessonId": "lesson-18",
-            "lessonTitle": "CFA Validity Evidence, Model Refinement & Reporting",
-            "lessonNum": 18
+            "lessonNum": 12
           }
         ]
       },
@@ -452,14 +417,9 @@ const CourseCatalog = [
         "chapterTitle": "Structural Equation Modeling (SEM)",
         "lessons": [
           {
-            "lessonId": "lesson-19",
+            "lessonId": "lesson-13",
             "lessonTitle": "SEM Foundations: Architecture, Effects & Output",
-            "lessonNum": 19
-          },
-          {
-            "lessonId": "lesson-20",
-            "lessonTitle": "SEM in Practice: Model Comparison & the Full Worked Example",
-            "lessonNum": 20
+            "lessonNum": 13
           }
         ]
       },
@@ -468,9 +428,9 @@ const CourseCatalog = [
         "chapterTitle": "Integration: Technique Selection & Research Ethics",
         "lessons": [
           {
-            "lessonId": "lesson-21",
+            "lessonId": "lesson-14",
             "lessonTitle": "Integration: Technique Selection & Research Ethics",
-            "lessonNum": 21
+            "lessonNum": 14
           }
         ]
       }
